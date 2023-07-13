@@ -20,12 +20,24 @@ spring:
   cloud:
     stream:
       function:
-        definition: appCreatedSupplier;appUpdatedSupplier
+        definition: appCreatedEventListener;appUpdatedEventListener;
       bindings:
-        appCreatedSupplier-out-0:
+        HealthCheckTaskCommand-out-0:
+          destination: health-check.v1.command.execute-task
+        appCreatedEventListener-in-0:
           destination: app.v1.event.app-created
-        appUpdatedSupplier-out-0:
+          group: scheduler
+        appUpdatedEventListener-in-0:
           destination: app.v1.event.app-updated
+          group: scheduler
+        rabbit:
+          bindings:
+            appCreatedEventListener-in-0:
+              consumer:
+                auto-bind-dlq: true
+            appUpdatedEventListener-in-0:
+              consumer:
+                auto-bind-dlq: true
 
 server:
   port: 8083
