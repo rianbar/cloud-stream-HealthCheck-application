@@ -18,6 +18,10 @@ public class AppModel {
     private String name;
     private String address;
 
+    protected AppModel() {
+        //for JPA-Hibernate
+    }
+
     public AppModel(UUID id, String name, String address) {
         this.id = id;
         this.name = name;

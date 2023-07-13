@@ -28,4 +28,4 @@ spring:
           destination: app.v1.event.app-updated
 
 server:
-  port: 8080
+  port: 8083

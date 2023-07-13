@@ -2,6 +2,8 @@ package com.async.application.controllers;
 
 import com.async.application.core.Mapper;
 import com.async.application.dtos.AppCreateRequestDTO;
+import com.async.application.dtos.AppDTO;
+import com.async.application.dtos.AppUpdateRequestDTO;
 import com.async.application.models.AppModel;
 import com.async.application.repositories.AppRepository;
 import com.async.application.services.AppManagementService;
@@ -32,24 +34,38 @@ public class AppController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AppModel create(@RequestBody @Valid AppCreateRequestDTO request) {
+    public AppDTO create(@RequestBody @Valid AppCreateRequestDTO request) {
         AppModel app = appManagementService.create(AppModel.builder()
                         .name(request.getName())
                         .address(request.getAddress())
                         .build());
 
-        return mapper.map(app, AppModel.class);
+        return mapper.map(app, AppDTO.class);
     }
 
     @PutMapping("/{appID}")
-    public AppModel update(@PathVariable UUID appID) {
-        AppModel app = appRepository.findById(appID).orElseThrow(AppNotFoundException::new);
-        return mapper.map(app, AppModel.class);
+    public AppDTO update(@PathVariable UUID appID, @RequestBody @Valid AppUpdateRequestDTO request) {
+        AppModel app = appManagementService.update(AppModel.builder()
+                        .id(appID)
+                        .name(request.getName())
+                        .address(request.getAddress())
+                        .build());
+
+        return mapper.map(app, AppDTO.class);
     }
+
+
+    @GetMapping("/{appID}")
+    @Transactional
+    public AppDTO getByID(@PathVariable UUID appID) {
+        AppModel app = appRepository.findById(appID).orElseThrow(AppNotFoundException::new);
+        return mapper.map(app, AppDTO.class);
+    }
+
 
     @GetMapping
     @Transactional
-    public List<AppModel> getAll() {
-        return appRepository.findAll().stream().map(app -> mapper.map(app, AppModel.class)).toList();
+    public List<AppDTO> getAll() {
+        return appRepository.findAll().stream().map(app -> mapper.map(app, AppDTO.class)).toList();
     }
 }

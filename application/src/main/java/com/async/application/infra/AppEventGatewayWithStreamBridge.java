@@ -2,6 +2,7 @@ package com.async.application.infra;
 
 import com.async.application.config.AppProperties;
 import com.async.application.core.Mapper;
+import com.async.application.dtos.AppDTO;
 import com.async.application.models.AppModel;
 import com.async.application.services.AppEventGateway;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +21,15 @@ public class AppEventGatewayWithStreamBridge implements AppEventGateway {
 
     @Override
     public void sendAppCreatedEvent(AppModel app) {
-        log.info("App created" + app.getId());
-        AppModel model = mapper.map(app, AppModel.class);
+        log.info("App created -> " + app.getId());
+        AppDTO model = mapper.map(app, AppDTO.class);
         streamBridge.send(appProperties.getAppCreatedChannel(), model);
     }
 
     @Override
     public void sendAppUpdatedEvent(AppModel app) {
-        log.info("App updated" + app.getId());
-        AppModel model = mapper.map(app, AppModel.class);
+        log.info("App updated ->" + app.getId());
+        AppDTO model = mapper.map(app, AppDTO.class);
         streamBridge.send(appProperties.getAppUpdatedChannel(), model);
     }
 }

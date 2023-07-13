@@ -32,6 +32,7 @@ public class AppManagementService {
     @Transactional
     public AppModel update(AppModel app) {
         AppModel existingApp = findAppById(app.getId());
+        existingApp.update(app);
         appRepository.saveAndFlush(existingApp);
         appEventGateway.sendAppUpdatedEvent(existingApp);
 
